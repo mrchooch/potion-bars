@@ -41,7 +41,7 @@ public class PotionBarPlugin extends Plugin  {
 		int scriptId = event.getScriptId();
 
 		//If Potion Storage is opened or updated
-		if (scriptId == ScriptID.POTIONSTORE_BUILD || scriptId == ScriptID.POTIONSTORE_DOSE_CHANGE || scriptId == ScriptID.POTIONSTORE_DOSES || scriptId == ScriptID.POTIONSTORE_WITHDRAW_DOSES)  {
+		if (scriptId == ScriptID.POTIONSTORE_BUILD || scriptId == ScriptID.POTIONSTORE_DOSES)  {
 			Widget w = client.getWidget(ComponentID.BANK_POTIONSTORE_CONTENT);
 			Widget[] children = w.getDynamicChildren();
 
