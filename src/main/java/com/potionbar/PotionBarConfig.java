@@ -4,9 +4,10 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("potionStorageBars")
-public interface PotionBarConfig extends Config
-{
+@ConfigGroup(PotionBarConfig.GROUP)
+public interface PotionBarConfig extends Config  {
+	String GROUP = "potionBars";
+
 	@ConfigItem(
 		keyName = "barScale",
 		name = "Full Bar Doses",
