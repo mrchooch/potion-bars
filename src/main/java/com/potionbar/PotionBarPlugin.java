@@ -140,14 +140,7 @@ public class PotionBarPlugin extends Plugin  {
 			//Figure out how wide the progress bar should be
 			String str = panel.dosesOriginal.getText();
 			int doseCount = Integer.parseInt(str.replace("Doses: ", ""));
-
-			int barWidth;
-			if (config.logScale()) {
-				barWidth = (int)((float)Math.log(doseCount) / (float)Math.log(config.barScale()));
-			} else {
-				barWidth = Math.round(((float)doseCount/ config.barScale()) * 145);
-			}
-
+			int barWidth = Math.round(((float)doseCount/ config.barScale()) * 145);
 			panel.foregroundBar.setOriginalWidth(Math.min(barWidth, 145));
 
 			//Set colour of bar
