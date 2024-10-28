@@ -47,7 +47,7 @@ public class PotionBarPlugin extends Plugin  {
 		public Widget dosesDisplay;
 		public Widget foregroundBar;
 		public Widget backgroundBar;
-	};
+	}
 
 	private List<PotionPanel> potionPanels;
 
@@ -154,9 +154,9 @@ public class PotionBarPlugin extends Plugin  {
 			panel.foregroundBar.setTextColor(colour);
 
 			//Update doses text
-			String doseText = "";
+			String doseText;
 			if (config.doseDisplay()) {
-				doseText = "Pots: " + String.valueOf((int)Math.floor((float)doseCount/4));
+				doseText = "Pots: " + (int)Math.floor((float)doseCount/4);
 			} else {
 				doseText = panel.dosesOriginal.getText();
 			}

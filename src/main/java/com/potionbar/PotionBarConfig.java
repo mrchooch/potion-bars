@@ -37,14 +37,4 @@ public interface PotionBarConfig extends Config  {
 	default boolean doseDisplay() {
 		return false;
 	}
-
-	@ConfigItem(
-			keyName = "logScale",
-			name = "Logarithmic Scale",
-			description = "Calculates progress bars logarithmically rather than linearly",
-			position = 4
-	)
-	default boolean logScale() {
-		return false;
-	}
 }
