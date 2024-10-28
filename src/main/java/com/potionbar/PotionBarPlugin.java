@@ -27,8 +27,6 @@ import java.util.List;
 )
 
 public class PotionBarPlugin extends Plugin  {
-	java.util.logging.Logger logger =  java.util.logging.Logger.getLogger(this.getClass().getName());
-
 	@Inject
 	private ClientThread clientThread;
 
