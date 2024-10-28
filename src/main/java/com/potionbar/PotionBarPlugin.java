@@ -61,6 +61,11 @@ public class PotionBarPlugin extends Plugin  {
 		}
 	}
 
+	@Override
+	protected void shutDown() throws Exception  {
+		potionPanels.clear();
+	}
+
 	@Subscribe
 	public void onScriptPostFired(ScriptPostFired event) {
 		int scriptId = event.getScriptId();
