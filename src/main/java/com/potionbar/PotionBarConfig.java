@@ -6,7 +6,7 @@ import net.runelite.client.config.ConfigItem;
 
 @ConfigGroup(PotionBarConfig.GROUP)
 public interface PotionBarConfig extends Config  {
-	String GROUP = "potionBars";
+	String GROUP = "potionStorageBars";
 
 	@ConfigItem(
 		keyName = "barScale",
@@ -35,6 +35,16 @@ public interface PotionBarConfig extends Config  {
 			position = 3
 	)
 	default boolean doseDisplay() {
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "logScale",
+			name = "Logarithmic Scale",
+			description = "Calculates progress bars logarithmically rather than linearly",
+			position = 4
+	)
+	default boolean logScale() {
 		return false;
 	}
 }

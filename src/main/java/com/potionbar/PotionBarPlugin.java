@@ -141,8 +141,14 @@ public class PotionBarPlugin extends Plugin  {
 			String str = panel.dosesOriginal.getText();
 			int doseCount = Integer.parseInt(str.replace("Doses: ", ""));
 
-			int barWidth = Math.min(Math.round(((float)doseCount/ config.barScale()) * 145), 145);
-			panel.foregroundBar.setOriginalWidth(barWidth);
+			int barWidth;
+			if (config.logScale()) {
+				barWidth = (int)((float)Math.log(doseCount) / (float)Math.log(config.barScale()));
+			} else {
+				barWidth = Math.round(((float)doseCount/ config.barScale()) * 145);
+			}
+
+			panel.foregroundBar.setOriginalWidth(Math.min(barWidth, 145));
 
 			//Set colour of bar
 			int colour;
