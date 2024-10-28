@@ -11,20 +11,40 @@ public interface PotionBarConfig extends Config  {
 	@ConfigItem(
 		keyName = "barScale",
 		name = "Full Bar Doses",
-		description = "The amount of doses to fill a bar"
+		description = "The amount of doses to fill a bar",
+			position = 1
 	)
-	default int barScale()
-	{
+	default int barScale() {
 		return 100;
 	}
 
 	@ConfigItem(
 			keyName = "barColours",
 			name = "Potion Coloured Bars",
-			description = "The colour of a bar will match it's potion"
+			description = "The colour of a bar will match its' potion",
+			position = 2
 	)
-	default boolean barColours()
-	{
+	default boolean barColours() {
 		return true;
+	}
+
+	@ConfigItem(
+			keyName = "doseDisplay",
+			name = "Count Full Potions",
+			description = "Instead of doses, show the number of 4 dose potions",
+			position = 3
+	)
+	default boolean doseDisplay() {
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "logScale",
+			name = "Logarithmic Scale",
+			description = "Calculates progress bars logarithmically rather than linearly",
+			position = 4
+	)
+	default boolean logScale() {
+		return false;
 	}
 }

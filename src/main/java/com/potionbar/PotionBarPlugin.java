@@ -16,6 +16,7 @@ import net.runelite.api.ScriptID;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.widgets.WidgetType;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.callback.ClientThread;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,10 @@ import java.util.List;
 
 public class PotionBarPlugin extends Plugin  {
 	java.util.logging.Logger logger =  java.util.logging.Logger.getLogger(this.getClass().getName());
+
+	@Inject
+	private ClientThread clientThread;
+
 	@Inject
 	private Client client;
 
@@ -54,7 +59,7 @@ public class PotionBarPlugin extends Plugin  {
 	@Subscribe
 	public void onConfigChanged(ConfigChanged configChanged) {
 		if (configChanged.getGroup().equals(PotionBarConfig.GROUP)) {
-			createProgressBars();
+			clientThread.invokeLater(this::updateProgressBars);
 		}
 	}
 
@@ -88,14 +93,6 @@ public class PotionBarPlugin extends Plugin  {
 				continue;
 			}
 
-			//Get colour to set foreground bar to, either potion colour or green
-			int colour;
-			if (config.barColours()) {
-				colour = itemManager.getImage(wItem.getItemId()).getRGB(13, 16);
-			} else {
-				colour = 30770;
-			}
-
 			//Create background of the bar
 			Widget barBackground = w.createChild(WidgetType.RECTANGLE);
 			barBackground.setFilled(true);
@@ -111,11 +108,9 @@ public class PotionBarPlugin extends Plugin  {
 			barForeground.setOriginalX(wDoses.getOriginalX());
 			barForeground.setOriginalY(wDoses.getOriginalY());
 			barForeground.setOriginalHeight(13);
-			barForeground.setTextColor(colour);
 
 			//Create a copy of the doses text because im an idiot that couldnt figure out how to reorder the widgets properly
 			Widget text = w.createChild(WidgetType.TEXT);
-			text.setText(wDoses.getText());
 			text.setOriginalHeight(wDoses.getOriginalHeight());
 			text.setOriginalWidth(wDoses.getOriginalWidth());
 			text.setOriginalX((wDoses.getOriginalX()) + 2);
@@ -142,14 +137,30 @@ public class PotionBarPlugin extends Plugin  {
 
 	private void updateProgressBars() {
 		for (PotionPanel panel : potionPanels) {
-			//Update doses text
-			panel.dosesDisplay.setText(panel.dosesOriginal.getText());
-
 			//Figure out how wide the progress bar should be
 			String str = panel.dosesOriginal.getText();
 			int doseCount = Integer.parseInt(str.replace("Doses: ", ""));
+
 			int barWidth = Math.min(Math.round(((float)doseCount/ config.barScale()) * 145), 145);
 			panel.foregroundBar.setOriginalWidth(barWidth);
+
+			//Set colour of bar
+			int colour;
+			if (config.barColours()) {
+				colour = itemManager.getImage(panel.item.getItemId()).getRGB(13, 16);
+			} else {
+				colour = 30770;
+			}
+			panel.foregroundBar.setTextColor(colour);
+
+			//Update doses text
+			String doseText = "";
+			if (config.doseDisplay()) {
+				doseText = "Pots: " + String.valueOf((int)Math.floor((float)doseCount/4));
+			} else {
+				doseText = panel.dosesOriginal.getText();
+			}
+			panel.dosesDisplay.setText(doseText);
 
 			panel.dosesDisplay.revalidate();
 			panel.foregroundBar.revalidate();
