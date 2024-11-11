@@ -91,8 +91,8 @@ public class PotionBarPlugin extends Plugin  {
 			Widget wItem = children[i + 1];
 			Widget wDoses = children[i + 3];
 
-			//Skip past errors and unfinished potions
-			if (wItem.getItemId() == -1 || Strings.isNullOrEmpty(wDoses.getText()) || wItem.getName().contains("(unf)")) {
+			//Skip past errors
+			if (wItem.getItemId() == -1 || Strings.isNullOrEmpty(wDoses.getText())) {
 				continue;
 			}
 
@@ -142,8 +142,32 @@ public class PotionBarPlugin extends Plugin  {
 		for (PotionPanel panel : potionPanels) {
 			//Figure out how wide the progress bar should be
 			String str = panel.dosesOriginal.getText();
-			int doseCount = Integer.parseInt(str.replace("Doses: ", ""));
-			int barWidth = Math.round(((float)doseCount/ config.barScale()) * 145);
+
+
+			boolean isUnf = panel.item.getName().contains("(unf)");
+			boolean isMix = panel.item.getName().contains("mix");
+			boolean isWeaponPoison = panel.item.getName().contains("Weapon poison");
+
+			int fullDoses;
+			if (isUnf) {
+				fullDoses = 1;
+			} else if (isMix) {
+				fullDoses = 2;
+			} else if (isWeaponPoison) {
+				fullDoses = 1;
+			} else {
+				fullDoses = 4;
+			}
+
+			//Get how many doses
+			int doseCount;
+			if (isUnf || isWeaponPoison) {
+				doseCount = Integer.parseInt(str.replace("Quantity: ", ""));
+			} else {
+				doseCount = Integer.parseInt(str.replace("Doses: ", ""));
+			}
+
+			int barWidth = Math.round(((float)(doseCount)/ config.barScale()) * 145);
 			panel.foregroundBar.setOriginalWidth(Math.min(barWidth, 145));
 
 			//Set colour of bar
@@ -157,8 +181,10 @@ public class PotionBarPlugin extends Plugin  {
 
 			//Update doses text
 			String doseText;
-			if (config.doseDisplay()) {
-				doseText = "Pots: " + (int)Math.floor((float)doseCount/4);
+
+
+			if (config.doseDisplay() || isUnf || isWeaponPoison) {
+				doseText = "Pots: " + (int)Math.floor((float)doseCount/(float)fullDoses);
 			} else {
 				doseText = panel.dosesOriginal.getText();
 			}
