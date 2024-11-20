@@ -8,6 +8,13 @@ import net.runelite.client.config.ConfigItem;
 public interface PotionBarConfig extends Config  {
 	String GROUP = "potionStorageBars";
 
+	enum doseDisplayType {
+		POTS,
+		DOSES,
+		POTS_AND_DOSES,
+		DOSES_AND_POTS
+	}
+
 	@ConfigItem(
 		keyName = "barScale",
 		name = "Full Bar Doses",
@@ -30,11 +37,11 @@ public interface PotionBarConfig extends Config  {
 
 	@ConfigItem(
 			keyName = "doseDisplay",
-			name = "Count Full Potions",
-			description = "Instead of doses, show the number of 4 dose potions",
+			name = "Text Display",
+			description = "What the text is counting",
 			position = 3
 	)
-	default boolean doseDisplay() {
-		return false;
+	default doseDisplayType doseDisplay() {
+		return doseDisplayType.DOSES;
 	}
 }

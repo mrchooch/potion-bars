@@ -180,14 +180,26 @@ public class PotionBarPlugin extends Plugin  {
 			panel.foregroundBar.setTextColor(colour);
 
 			//Update doses text
-			String doseText;
+			String doseText = "";
+			int potCount = (int)Math.floor((float)doseCount/(float)fullDoses);
 
+			switch(config.doseDisplay()) {
+				case POTS:
+					doseText = "Pots: " + potCount;
+					break;
+				case DOSES:
+					doseText = "Doses: " + doseCount;
+					break;
 
-			if (config.doseDisplay() || isUnf || isWeaponPoison) {
-				doseText = "Pots: " + (int)Math.floor((float)doseCount/(float)fullDoses);
-			} else {
-				doseText = panel.dosesOriginal.getText();
+				case POTS_AND_DOSES:
+					doseText = "Pots: " + potCount + " (" + doseCount + ")";
+					break;
+
+				case DOSES_AND_POTS:
+					doseText = "Doses: " + doseCount + " (" + potCount + ")";
+					break;
 			}
+
 			panel.dosesDisplay.setText(doseText);
 
 			panel.dosesDisplay.revalidate();
