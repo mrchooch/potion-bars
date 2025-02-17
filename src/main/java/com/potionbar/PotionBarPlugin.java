@@ -173,7 +173,7 @@ public class PotionBarPlugin extends Plugin  {
 			//Set colour of bar
 			int colour;
 			if (config.barColours()) {
-				colour = itemManager.getImage(panel.item.getItemId()).getRGB(13, 16);
+				colour = itemManager.getImage(panel.item.getItemId()).getRGB(13, 24);
 			} else {
 				colour = 30770;
 			}
