@@ -3,7 +3,9 @@ package com.potionbar;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.widgets.ComponentID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -75,7 +77,7 @@ public class PotionBarPlugin extends Plugin  {
 			createProgressBars();
 		}
 
-		if (scriptId == ScriptID.POTIONSTORE_DOSE_CHANGE)  {
+		if (scriptId == ScriptID.POTIONSTORE_DOSE_CHANGE || scriptId == ScriptID.POTIONSTORE_WITHDRAW_DOSES)  {
 			updateProgressBars();
 		}
 	}
@@ -143,20 +145,19 @@ public class PotionBarPlugin extends Plugin  {
 			//Figure out how wide the progress bar should be
 			String str = panel.dosesOriginal.getText();
 
-
 			boolean isUnf = panel.item.getName().contains("(unf)");
 			boolean isMix = panel.item.getName().contains("mix");
 			boolean isWeaponPoison = panel.item.getName().contains("Weapon poison");
 
 			int fullDoses;
-			if (isUnf) {
-				fullDoses = 1;
-			} else if (isMix) {
-				fullDoses = 2;
-			} else if (isWeaponPoison) {
+			if (isUnf || isWeaponPoison) {
 				fullDoses = 1;
 			} else {
-				fullDoses = 4;
+				//Get how many doses the potion is set to withdraw
+				int startIndex = panel.item.getName().indexOf("(") + 1;
+				int endIndex = startIndex + 1;
+
+				fullDoses = Integer.parseInt(panel.item.getName().substring(startIndex, endIndex));
 			}
 
 			//Get how many doses
@@ -173,7 +174,12 @@ public class PotionBarPlugin extends Plugin  {
 			//Set colour of bar
 			int colour;
 			if (config.barColours()) {
-				colour = itemManager.getImage(panel.item.getItemId()).getRGB(13, 24);
+				int yPos = 27;
+				if (isMix) {
+					yPos = 26;
+				}
+
+				colour = itemManager.getImage(panel.item.getItemId()).getRGB(13, yPos);
 			} else {
 				colour = 30770;
 			}
