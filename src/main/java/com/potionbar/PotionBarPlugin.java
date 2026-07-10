@@ -67,7 +67,17 @@ public class PotionBarPlugin extends Plugin  {
 	}
 
 	@Override
+	protected void startUp() throws Exception {
+		clientThread.invokeLater(this::createProgressBars);
+	}
+
+	@Override
 	protected void shutDown() throws Exception  {
+		for (PotionPanel panel : potionPanels) {
+			panel.backgroundBar.setHidden(true);
+			panel.foregroundBar.setHidden(true);
+			panel.dosesDisplay.setHidden(true);
+		}
 		potionPanels.clear();
 	}
 
@@ -79,8 +89,8 @@ public class PotionBarPlugin extends Plugin  {
 			createProgressBars();
 		}
 
-		if (scriptId == ScriptID.POTIONSTORE_DOSE_CHANGE)  {
-			//updateProgressBars();
+		if (scriptId ==  ScriptID.POTIONSTORE_DOSE_CHANGE)  {
+			updateProgressBars();
 		}
 
 		if (scriptId == ScriptID.POTIONSTORE_WITHDRAW_DOSES)  {
@@ -152,20 +162,22 @@ public class PotionBarPlugin extends Plugin  {
 			String str = panel.dosesOriginal.getText();
 			str = str.replaceAll(",", "");
 
-			boolean isUnf = panel.item.getName().contains("(unf)");
-			boolean isMix = panel.item.getName().contains("mix");
-			boolean isWeaponPoison = panel.item.getName().contains("Weapon poison");
-			boolean isPoultice = panel.item.getName().contains("poultice");
+			String itemName = itemManager.getItemComposition(panel.item.getItemId()).getName();
+
+			boolean isUnf = itemName.contains("(unf)");
+			boolean isMix = itemName.contains("mix");
+			boolean isWeaponPoison = itemName.contains("Weapon poison");
+			boolean isPoultice = itemName.contains("poultice");
 
 			int fullDoses;
 			if (isUnf || isWeaponPoison || isPoultice) {
 				fullDoses = 1;
 			} else {
 				//Get how many doses the potion is set to withdraw
-				int startIndex = panel.item.getName().indexOf("(") + 1;
+				int startIndex = itemName.indexOf("(") + 1;
 				int endIndex = startIndex + 1;
 
-				fullDoses = Integer.parseInt(panel.item.getName().substring(startIndex, endIndex));
+				fullDoses = Integer.parseInt(itemName.substring(startIndex, endIndex));
 			}
 
 			//Get how many doses
@@ -189,7 +201,7 @@ public class PotionBarPlugin extends Plugin  {
 
 				colour = itemManager.getImage(panel.item.getItemId()).getRGB(13, yPos);
 			} else {
-				colour = 30770;
+				colour = config.customColour().getRGB();
 			}
 			panel.foregroundBar.setTextColor(colour);
 
